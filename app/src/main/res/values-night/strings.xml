@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="headnews">HeadNews</string>
+    <string name="savedarticles">SavedArticles</string>
+    <string name="search">Search</string>
+</resources>
