@@ -5,4 +5,6 @@
     <string name="headnews">HeadNews</string>
     <string name="savedarticles">SavedArticles</string>
     <string name="search">Search</string>
+    <string name="get_news_according_to_your_location">get news according to your location</string>
+    <string name="article_search">Search</string>
 </resources>
