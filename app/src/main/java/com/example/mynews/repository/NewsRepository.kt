@@ -3,8 +3,9 @@ package com.example.mynews.repository
 import com.example.mynews.api.Service
 import com.example.mynews.database.ArticlesDao
 import com.example.mynews.domain.Article
-import com.example.mynews.dto.NewsResponse
+import com.example.mynews.dto.Result
 import com.example.mynews.utils.domainToEntity
+import com.example.mynews.utils.dtoToDomain
 import com.example.mynews.utils.entityToDomain
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -28,22 +29,74 @@ class NewsRepository(private val dao: ArticlesDao,private val NewService: Servic
     }.distinctUntilChanged() }
 
 
-    override suspend fun getNewsByCountry(countryCode:String): NewsResponse?
+    override suspend fun getNewsByCountry(countryCode:String): Result<List<Article>>
     {
-        return withContext(dispatcher){NewService.getHeadLines(country = countryCode).body()}
+       var result:Result<List<Article>>
+
+         withContext(dispatcher){
+
+             val response = NewService.getHeadLines(country = countryCode,pageNumber = 1)
+
+             result = if (response.isSuccessful)
+             {
+                 val list = response.body()?.articles.dtoToDomain()
+
+                 Result.Success(data = list!! )
+             }else
+             {
+                 Result.Error(response.message(),response.code())
+             }
+
+         }
+
+          return result
+    }
+
+    override suspend fun getNewsByCatagory(countryCode: String, category:String):Result<List<Article>>
+    {
+        var result:Result<List<Article>>
+
+        withContext(dispatcher){
+
+            val response = NewService.getByCatagory(country = countryCode,category = category,pageNumber = 1)
+
+            result = if (response.isSuccessful)
+            {
+                val list = response.body()?.articles.dtoToDomain()
+                Result.Success(data = list!!)
+            }else
+            {
+                Result.Error(response.message(),response.code())
+            }
+
+        }
+
+        return result
 
 
     }
 
-    override suspend fun getNewsByCatagory(countryCode: String, category:String):NewsResponse?
+   override suspend fun NewsSearch(keyWord:String):Result<List<Article>>
     {
-        return withContext(dispatcher){NewService.getByCatagory(country = countryCode,category = category).body()}
+        var result:Result<List<Article>>
 
+        withContext(dispatcher){
 
+            val response = NewService.searchForNews(searchQuery = keyWord,pageNumber = 1)
 
+            result = if (response.isSuccessful)
+            {
+                val list = response.body()?.articles.dtoToDomain()
+                Result.Success(data = list!!)
+            }else
+            {
+                Result.Error(response.message(),response.code())
+            }
+
+        }
+
+        return result
     }
-
-    //suspend fun NewsSearch(key)
 
 
 

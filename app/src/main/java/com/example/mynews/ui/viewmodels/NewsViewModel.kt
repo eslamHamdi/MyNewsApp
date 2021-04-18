@@ -1,11 +1,11 @@
 package com.example.mynews.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.mynews.domain.Article
-import com.example.mynews.dto.NewsResponse
+import com.example.mynews.dto.Result
 import com.example.mynews.repository.DataSource
-import com.example.mynews.utils.dtoToDomain
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class NewsViewModel(private val repo:DataSource):ViewModel() {
@@ -14,49 +14,42 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
     val savedNews:LiveData<List<Article>> = repo.savedArticles.asLiveData(viewModelScope.coroutineContext)
     var LoadingState:MutableLiveData<Boolean> = MutableLiveData(false)
     var news:MutableLiveData<List<Article>> = MutableLiveData(null)
+    private val channel = Channel<String>(Channel.BUFFERED)
+    val toastFlow = channel.receiveAsFlow()
 
 
     fun getNews(code:String)
     {
         LoadingState.value = true
 
-        var response:NewsResponse? = null
-
         viewModelScope.launch {
 
-            try {
-                response = repo.getNewsByCountry(code)
-                val list = response?.articles.dtoToDomain()
-                news.postValue(list)
-            }catch (e:Exception)
+              val response = repo.getNewsByCountry(code)
+            when(response)
             {
-                Log.e(null, "getNews: ${response?.message} + ${response?.code} ", )
+                is Result.Success -> {news.postValue(response.data)}
+                is Result.Error -> toastTriggered(response.message)
             }
-
+            LoadingState.value = false
         }
-        LoadingState.value = false
+
     }
 
     fun getbyCategory(code:String,category:String)
     {
         LoadingState.value = true
 
-        var response:NewsResponse? = null
-
         viewModelScope.launch {
 
-            try {
-                response = repo.getNewsByCatagory(code,category)
-                val list = response?.articles.dtoToDomain()
-                news.postValue(list)
-            }catch (e:Exception)
+            val response = repo.getNewsByCatagory(code,category)
+            when(response)
             {
-                Log.e(null, "getNews: ${response?.message} + ${response?.code} ", )
+                is Result.Success -> {news.postValue(response.data)}
+                is Result.Error -> toastTriggered(response.message)
             }
-
             LoadingState.value = false
-
         }
+
 
     }
 
@@ -84,6 +77,20 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
         }
     }
 
+    fun toastTriggered(message:String?)
+    {
+        viewModelScope.launch {
+
+            if (message != null)
+            {
+                channel.send(message)
+            }else
+            {
+                channel.send("error No Connection")
+            }
+
+        }
+    }
 
 
 

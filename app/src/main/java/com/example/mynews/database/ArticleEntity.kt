@@ -3,7 +3,6 @@ package com.example.mynews.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.mynews.dto.Source
 
 @Entity(tableName = "SavedArticles")
 data class ArticleEntity(
@@ -17,7 +16,7 @@ data class ArticleEntity(
 
     @ColumnInfo val description: String? = null,
 
-    @ColumnInfo val source: Source? = null,
+    @ColumnInfo val source: String? = null,
 
     @ColumnInfo val title: String? = null,
 
