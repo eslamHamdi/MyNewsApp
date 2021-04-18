@@ -1,7 +1,10 @@
 package com.example.mynews.database
 
-import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ArticlesDao {
@@ -9,9 +12,12 @@ interface ArticlesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveArticle(article:ArticleEntity)
 
-    @Delete
-    suspend fun deleteArticle(article: ArticleEntity)
+    @Query("DELETE FROM SavedArticles WHERE url =:articleID" )
+    suspend fun deleteArticle(articleID: String)
 
     @Query("SELECT * FROM SavedArticles")
-    suspend fun getSavedArticles():LiveData<List<ArticleEntity>>
+    fun getSavedArticles():Flow<List<ArticleEntity>>
+
+    @Query("DELETE FROM SavedArticles")
+    suspend fun deleteAllArticles()
 }

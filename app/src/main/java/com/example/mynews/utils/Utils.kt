@@ -5,8 +5,14 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.mynews.database.ArticleEntity
+import com.example.mynews.domain.Article
+import com.example.mynews.dto.ArticlesItem
 import okhttp3.Cache
 import java.io.File
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.M)
 fun isNetworkConnected(context: Context): Boolean
@@ -55,3 +61,53 @@ fun cache(context: Context): Cache
 
     return cache
 }
+
+
+fun List<ArticleEntity>.entityToDomain():List<Article>
+{
+    return map {
+
+        Article(url = it.url, publishDate = it.publishedAt, author = it.author, urlToImage = it.urlToImage,
+                articleDescription = it.description, source = it.source, articleTitle = it.title, articleContent = it.content)
+
+    }
+}
+
+    fun List<ArticlesItem?>?.dtoToDomain():List<Article>?
+    {
+        return this?.map {
+
+            Article(url = it?.url, publishDate = it?.publishedAt, author = it?.author, urlToImage = it?.urlToImage,
+                articleDescription = it?.description, source = it?.source, articleTitle = it?.title, articleContent = it?.content)
+        }
+    }
+
+fun Article.domainToEntity(): ArticleEntity
+{
+    return ArticleEntity(url = this.url, publishedAt = this.publishDate, author = this.author,
+
+            urlToImage = this.urlToImage, description =this.articleDescription, source = this.source,
+
+            title = this.articleTitle, content = this.articleContent)
+
+
+
+}
+
+    fun parseDate(
+            inputDateString: String?,
+            inputDateFormat: SimpleDateFormat,
+            outputDateFormat: SimpleDateFormat
+    ): String? {
+        var date: Date? = null
+        var outputDateString: String? = null
+        try {
+            date = inputDateFormat.parse(inputDateString!!)
+            outputDateString = outputDateFormat.format(date!!)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        return outputDateString
+    }
+
+
