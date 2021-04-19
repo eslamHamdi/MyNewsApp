@@ -1,5 +1,6 @@
 package com.example.mynews.utils
 
+import android.Manifest
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -9,6 +10,7 @@ import com.example.mynews.database.ArticleEntity
 import com.example.mynews.domain.Article
 import com.example.mynews.dto.ArticlesItem
 import com.example.mynews.dto.Source
+import com.vmadalin.easypermissions.EasyPermissions
 import okhttp3.Cache
 import java.io.File
 import java.text.ParseException
@@ -110,5 +112,12 @@ fun Article.domainToEntity(): ArticleEntity
         }
         return outputDateString
     }
+
+fun hasLocationPermissions(context: Context) =  EasyPermissions.hasPermissions(
+        context,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+)
+
+
 
 

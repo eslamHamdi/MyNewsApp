@@ -137,6 +137,9 @@ dependencies {
     //easyPermissions
     implementation "com.vmadalin:easypermissions-ktx:0.1.0"
 
+    //location
+    implementation "com.google.android.gms:play-services-location:18.0.0"
+
     //apiKey
 //    "apiKey",
 //    "73dade22420a47f8afca5ddfbd5a7b6f"

@@ -4,6 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="viewModel"
+            type="com.example.mynews.ui.viewmodels.NewsViewModel" />
 
     </data>
 
@@ -31,6 +34,14 @@
             android:layout_margin="8dp"
             android:background="@drawable/ic_location_searching"
             android:contentDescription="@string/get_news_according_to_your_location" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            viewVisibility="@{viewModel.setLoadingState()}"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

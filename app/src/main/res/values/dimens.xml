@@ -3,4 +3,5 @@
     <dimen name="botton_default_size">60dp</dimen>
     <dimen name="small_margin">5dp</dimen>
     <dimen name="medium_margin">8dp</dimen>
+    <dimen name="text_size_normal">20sp</dimen>
 </resources>
