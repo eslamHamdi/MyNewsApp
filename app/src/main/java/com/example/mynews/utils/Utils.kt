@@ -9,7 +9,6 @@ import androidx.annotation.RequiresApi
 import com.example.mynews.database.ArticleEntity
 import com.example.mynews.domain.Article
 import com.example.mynews.dto.ArticlesItem
-import com.example.mynews.dto.Source
 import com.vmadalin.easypermissions.EasyPermissions
 import okhttp3.Cache
 import java.io.File
@@ -71,7 +70,7 @@ fun List<ArticleEntity>.entityToDomain():List<Article>
     return map {
 
         Article(url = it.url, publishDate = it.publishedAt, author = it.author, urlToImage = it.urlToImage,
-                articleDescription = it.description, source = Source(it.source), articleTitle = it.title, articleContent = it.content)
+                articleDescription = it.description, source = it.source, articleTitle = it.title, articleContent = it.content)
 
     }
 }
@@ -81,7 +80,7 @@ fun List<ArticleEntity>.entityToDomain():List<Article>
         return this?.map {
 
             Article(url = it?.url, publishDate = it?.publishedAt, author = it?.author, urlToImage = it?.urlToImage,
-                articleDescription = it?.description, source = it?.source, articleTitle = it?.title, articleContent = it?.content)
+                articleDescription = it?.description, source = it?.source?.name, articleTitle = it?.title, articleContent = it?.content)
         }
     }
 
@@ -89,7 +88,7 @@ fun Article.domainToEntity(): ArticleEntity
 {
     return ArticleEntity(url = this.url!!, publishedAt = this.publishDate, author = this.author,
 
-            urlToImage = this.urlToImage, description =this.articleDescription, source = this.source?.name,
+            urlToImage = this.urlToImage, description =this.articleDescription, source = this.source,
 
             title = this.articleTitle, content = this.articleContent)
 

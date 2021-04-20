@@ -31,6 +31,7 @@
                 android:layout_height="100dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="@dimen/small_margin"
                 showImage="@{Article.urlToImage}"/>
 
             <TextView
@@ -39,8 +40,9 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/article_image"
+                android:layout_marginStart="@dimen/small_margin"
                 android:layout_marginTop="@dimen/medium_margin"
-                android:text="@{Article.source.name}"/>
+                android:text="@{Article.source}"/>
 
             <TextView
                 android:id="@+id/date"
@@ -49,6 +51,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/article_source"
                 android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginStart="@dimen/small_margin"
                 android:text="@{Article.publishDate}"/>
 
             <TextView
@@ -62,6 +65,7 @@
                 android:maxLines="3"
                 android:textStyle="bold"
                 android:textSize="@dimen/text_size_normal"
+                android:padding="@dimen/small_margin"
                 android:textColor="@color/black"
                 android:text="@{Article.articleTitle}"/>
 
@@ -74,6 +78,7 @@
                 app:layout_constraintTop_toBottomOf="@id/article_title"
                 android:ellipsize="end"
                 android:maxLines="5"
+                android:padding="@dimen/small_margin"
                 android:layout_marginTop="@dimen/medium_margin"
                 android:text="@{Article.articleDescription}"/>
 

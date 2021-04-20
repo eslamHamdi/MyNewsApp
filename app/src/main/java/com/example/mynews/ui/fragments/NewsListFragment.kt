@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.mynews.R
 import com.example.mynews.adapters.NewsAdapter
 import com.example.mynews.databinding.FragmentNewsListBinding
@@ -44,7 +45,6 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
     var newsAdapter = NewsAdapter()
     lateinit var geocoder: Geocoder
     var isoCode:String? = "us"
-    @Volatile
     var countryName =""
 
     var locationCallback: LocationCallback? =null
@@ -61,9 +61,6 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
         geocoder = Geocoder(this.requireContext())
 
-//        viewModel.country.observe(viewLifecycleOwner,{
-//            countryName = it
-//        })
 
         viewModel.toastFlow.onEach {
             Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT).show()
@@ -79,7 +76,7 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.newsRecycler.adapter = newsAdapter
-       // viewModel.getNews(isoCode)
+        isoCode?.let { viewModel.getNews(it) }
 
         viewModel.news.observe(viewLifecycleOwner, {
 
@@ -211,7 +208,7 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
 
     override fun clickArticle(article: Article)
     {
-
+         findNavController().navigate(NewsListFragmentDirections.actionNewsListFragmentToArticleFragment(article))
     }
 
     //used structured concurrency to ensure syncronized background tasks

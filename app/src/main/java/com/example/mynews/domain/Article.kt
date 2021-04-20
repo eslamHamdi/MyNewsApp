@@ -1,7 +1,9 @@
 package com.example.mynews.domain
 
-import com.example.mynews.dto.Source
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Article( val url: String? = null,
 
                     val publishDate: String? = null,
@@ -12,8 +14,11 @@ data class Article( val url: String? = null,
 
                   val articleDescription: String? = null,
 
-                   val source: Source? = null,
+
+                   val source: String? = null,
 
                    val articleTitle: String? = null,
 
-                    val articleContent: String? = null)
+                    val articleContent: String? = null) : Parcelable
+
+
