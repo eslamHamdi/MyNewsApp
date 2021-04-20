@@ -106,7 +106,7 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
                     this,
                     "You need to accept location permission to get News From your Area.",
                     REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION
 
             )
         }
@@ -148,7 +148,7 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
                 interval = 10000
                 fastestInterval = 5000
                 smallestDisplacement = 100f
-                priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
                 Log.d(null, "getuserlocation: entered1")
             }
 
@@ -177,7 +177,7 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
                                {
 
                                       viewModel.getNews(isoCode!!)
-                                      //stopLocationUpdates()
+                                      stopLocationUpdates()
                                 }
 
                             }
