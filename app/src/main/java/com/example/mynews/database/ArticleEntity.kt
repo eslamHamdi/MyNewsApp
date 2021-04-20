@@ -1,12 +1,14 @@
 package com.example.mynews.database
 
+import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "SavedArticles")
 data class ArticleEntity(
-    @PrimaryKey val url: String? = null,
+    @NonNull
+    @PrimaryKey val url: String = "null",
 
     @ColumnInfo val publishedAt: String? = null,
 

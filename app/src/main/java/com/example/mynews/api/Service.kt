@@ -8,15 +8,15 @@ import retrofit2.http.Query
 interface Service {
 
 
-    @GET("v2/top-headlines")
+    @GET("top-headlines")
     suspend fun getHeadLines(@Query("country") country:String, @Query("page")
     pageNumber: Int = 1):Response<NewsResponse>
 
-    @GET("v2/top-headlines")
+    @GET("top-headlines")
     suspend fun getByCatagory(@Query("country") country:String, @Query("page")
     pageNumber: Int = 1,@Query("category") category:String):Response<NewsResponse>
 
-    @GET("v2/everything")
+    @GET("everything")
     suspend fun searchForNews(
         @Query("q")
         searchQuery: String,

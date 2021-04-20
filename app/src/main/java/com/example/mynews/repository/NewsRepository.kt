@@ -29,28 +29,29 @@ class NewsRepository(private val dao: ArticlesDao,private val NewService: Servic
     }.distinctUntilChanged() }
 
 
-    override suspend fun getNewsByCountry(countryCode:String): Result<List<Article>>
-    {
-       var result:Result<List<Article>>
+    override suspend fun getNewsByCountry(countryCode:String) = withContext(dispatcher){
 
-         withContext(dispatcher){
+        val response = NewService.getHeadLines(country = countryCode)
 
-             val response = NewService.getHeadLines(country = countryCode,pageNumber = 1)
+        if (response.isSuccessful)
+        {
+            val list = response.body()?.articles.dtoToDomain()
+            //Log.d(null, "getNewsByCountry: $list" )
 
-             result = if (response.isSuccessful)
-             {
-                 val list = response.body()?.articles.dtoToDomain()
+            return@withContext Result.Success(data = list!! )
+        }else
+        {
+            return@withContext Result.Error(response.message(),response.code())
+        }
 
-                 Result.Success(data = list!! )
-             }else
-             {
-                 Result.Error(response.message(),response.code())
-             }
-
-         }
-
-          return result
     }
+
+
+
+
+
+
+
 
     override suspend fun getNewsByCatagory(countryCode: String, category:String):Result<List<Article>>
     {

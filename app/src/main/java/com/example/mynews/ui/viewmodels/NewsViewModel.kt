@@ -12,32 +12,33 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
 
 
     val savedNews:LiveData<List<Article>> = repo.savedArticles.asLiveData(viewModelScope.coroutineContext)
-    var LoadingState:MutableLiveData<Boolean> = MutableLiveData(false)
+    var loadingState:MutableLiveData<Boolean> = MutableLiveData(false)
     var news:MutableLiveData<List<Article>> = MutableLiveData(null)
+    var country:MutableLiveData<String> = MutableLiveData("")
     private val channel = Channel<String>(Channel.BUFFERED)
     val toastFlow = channel.receiveAsFlow()
 
 
     fun getNews(code:String)
     {
-        LoadingState.value = true
+        loadingState.value = true
 
         viewModelScope.launch {
 
-              val response = repo.getNewsByCountry(code)
-            when(response)
+              when(val response = repo.getNewsByCountry(code))
             {
-                is Result.Success -> {news.postValue(response.data)}
+                is Result.Success -> {news.value = (response.data)}
                 is Result.Error -> toastTriggered(response.message)
             }
-            LoadingState.value = false
+            //Log.e(null, "getNews: ${news.value}", )
+            loadingState.value = false
         }
 
     }
 
     fun getbyCategory(code:String,category:String)
     {
-        LoadingState.value = true
+        loadingState.value = true
 
         viewModelScope.launch {
 
@@ -47,7 +48,7 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
                 is Result.Success -> {news.postValue(response.data)}
                 is Result.Error -> toastTriggered(response.message)
             }
-            LoadingState.value = false
+            loadingState.value = false
         }
 
 

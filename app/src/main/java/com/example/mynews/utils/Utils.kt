@@ -87,7 +87,7 @@ fun List<ArticleEntity>.entityToDomain():List<Article>
 
 fun Article.domainToEntity(): ArticleEntity
 {
-    return ArticleEntity(url = this.url, publishedAt = this.publishDate, author = this.author,
+    return ArticleEntity(url = this.url!!, publishedAt = this.publishDate, author = this.author,
 
             urlToImage = this.urlToImage, description =this.articleDescription, source = this.source?.name,
 
