@@ -29,9 +29,9 @@ import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
 
@@ -44,7 +44,9 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
     var newsAdapter = NewsAdapter()
     lateinit var geocoder: Geocoder
     var isoCode:String? = "us"
+    @Volatile
     var countryName =""
+
     var locationCallback: LocationCallback? =null
     val viewModel: NewsViewModel by sharedViewModel()
 
@@ -59,9 +61,9 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
         geocoder = Geocoder(this.requireContext())
 
-        viewModel.country.observe(viewLifecycleOwner,{
-            countryName = it
-        })
+//        viewModel.country.observe(viewLifecycleOwner,{
+//            countryName = it
+//        })
 
         viewModel.toastFlow.onEach {
             Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT).show()
@@ -170,15 +172,6 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
                                 getCountry(location)
                                 Log.e(null, "onLocationResult: $location" )
                                 Log.e(null, "onLocationResult: $countryName" )
-                                isoCode = countryName?.let { it1 -> getCountryCode(it1) }
-                                Log.d(null, "onLocationResult:$isoCode ")
-
-                                if (!isoCode.isNullOrEmpty())
-                               {
-
-                                      viewModel.getNews(isoCode!!)
-                                      stopLocationUpdates()
-                                }
 
                             }
 
@@ -221,46 +214,54 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
 
     }
 
+    //used structured concurrency to ensure syncronized background tasks
     private fun getCountry(location:Location?)
     {
 
-            var countryName =""
             lifecycleScope.launch(Dispatchers.Main) {
 
-                withContext(Dispatchers.IO) {
-                    countryName =
-                            try
-                            {
-                                geocoder.getFromLocation(location!!.latitude, location.longitude, 1).first()
-                                        .run {
-                                            val sb = StringBuilder()
+                    countryName = async {
+                        try
+                        {
+                            geocoder.getFromLocation(location!!.latitude, location.longitude, 1).first()
+                                    .run {
+                                        val sb = StringBuilder()
 //                                            for (i in 0 until this.maxAddressLineIndex)
 //                                            {
 //                                                sb.append(this.getAddressLine(i)).append("\n")
 //                                            }
-                                            //sb.append(this.locality).append("\n")
-                                            //sb.append(this.thoroughfare).append("\n")
-                                            sb.append(this.countryName)
-                                            sb.toString()
+                                        //sb.append(this.locality).append("\n")
+                                        //sb.append(this.thoroughfare).append("\n")
+                                        sb.append(this.countryName)
+                                        sb.toString()
 
 
-                                        }
-                            } catch (e: Exception)
-                            {
+                                    }
+                        } catch (e: Exception)
+                        {
 
-                                Log.d("adressList", "onLocationSelected: $e.localizedMessage")
-                                e.localizedMessage!!
-                            }
+                            Log.d("adressList", "onLocationSelected: $e.localizedMessage")
+                            e.localizedMessage!!
+                        }
+                    }.await()
 
-                   countryName?.let {
-                       viewModel.country.postValue(it)
-                   }
+                isoCode = countryName?.let { it1 -> getCountryCode(it1) }
+                Log.d(null, "onLocationResult:$isoCode ")
+
+                if (!isoCode.isNullOrEmpty())
+                {
+
+                    viewModel.getNews(isoCode!!)
+                    stopLocationUpdates()
+                }
+
+
                 }
 
             }
 
 
-    }
+
 
 
     fun getCountryCode(Name: String) =
