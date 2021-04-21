@@ -42,7 +42,7 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
 
     lateinit var binding: FragmentNewsListBinding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    var newsAdapter = NewsAdapter()
+   lateinit var newsAdapter:NewsAdapter
     lateinit var geocoder: Geocoder
     var isoCode:String? = "us"
     var countryName =""
@@ -75,20 +75,21 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        binding.newsRecycler.adapter = newsAdapter
         isoCode?.let { viewModel.getNews(it) }
 
         viewModel.news.observe(viewLifecycleOwner, {
-
+            newsAdapter = NewsAdapter()
+            binding.newsRecycler.adapter = newsAdapter
             newsAdapter.submitList(it)
-            newsAdapter.notifyDataSetChanged()
+            newsAdapter.articleClickListener = this
         })
 
 
-        newsAdapter.articleClickListener = this
+
 
         binding.filterByLocation.setOnClickListener {
             requestPermissions()
+
 
         }
 

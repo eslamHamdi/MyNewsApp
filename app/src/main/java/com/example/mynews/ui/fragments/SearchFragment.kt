@@ -24,7 +24,7 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
 
     val viewModel:NewsViewModel by sharedViewModel()
     lateinit var binding:FragmentSearchBinding
-    val adapter = NewsAdapter()
+   lateinit var adapter :NewsAdapter
 
 
     override fun onCreateView(
@@ -33,11 +33,14 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_search, container, false)
-        binding.searchRecycler.adapter = adapter
+
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        adapter.articleClickListener = this
+
         viewModel.searchNews.observe(viewLifecycleOwner,{
+            adapter = NewsAdapter()
+            binding.searchRecycler.adapter = adapter
+            adapter.articleClickListener = this
             adapter.submitList(it)
         })
         return binding.root
@@ -50,7 +53,7 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
         binding.searchBar.addTextChangedListener {
             job?.cancel()
             job = MainScope().launch {
-                delay(2000)
+                delay(1000)
                 it?.let {
                     if(it.toString().isNotEmpty()) {
                         viewModel.newsSearch(it.toString())

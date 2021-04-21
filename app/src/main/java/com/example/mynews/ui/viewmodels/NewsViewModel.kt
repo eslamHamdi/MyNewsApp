@@ -25,7 +25,6 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
 
 
         viewModelScope.launch {
-          news.value= mutableListOf()
               when(val response = repo.getNewsByCountry(code))
             {
                 is Result.Success -> {news.value = (response.data)}

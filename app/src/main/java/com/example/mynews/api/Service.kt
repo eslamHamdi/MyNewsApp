@@ -9,8 +9,8 @@ interface Service {
 
 
     @GET("top-headlines")
-    suspend fun getHeadLines(@Query("country") country:String, @Query("page")
-    pageNumber: Int = 1):Response<NewsResponse>
+    suspend fun getHeadLines(@Query("country") country:String
+   ):Response<NewsResponse>
 
     @GET("top-headlines")
     suspend fun getByCatagory(@Query("country") country:String, @Query("page")

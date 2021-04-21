@@ -53,6 +53,7 @@ class NewsAdapter:ListAdapter<Article,NewsAdapter.NewsViewHolder>(DiffCallBack)
     {
         val item = this.getItem(position)
         holder.bind(item)
+        holder.setIsRecyclable(false)
 
     }
 
@@ -62,5 +63,6 @@ class NewsAdapter:ListAdapter<Article,NewsAdapter.NewsViewHolder>(DiffCallBack)
     {
         fun clickArticle(article:Article)
     }
+
 
 }
