@@ -8,6 +8,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.PagerSnapHelper
 import com.example.mynews.R
 import com.example.mynews.adapters.NewsAdapter
 import com.example.mynews.databinding.FragmentSearchBinding
@@ -36,6 +37,10 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+        adapter = NewsAdapter()
+        binding.searchRecycler.adapter = adapter
+        val pager = PagerSnapHelper()
+        pager.attachToRecyclerView(binding.searchRecycler)
 
         viewModel.searchNews.observe(viewLifecycleOwner,{
             adapter = NewsAdapter()

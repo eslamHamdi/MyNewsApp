@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 class NewsViewModel(private val repo:DataSource):ViewModel() {
 
 
-    val savedNews:LiveData<List<Article>> = repo.savedArticles.asLiveData(viewModelScope.coroutineContext)
+
     var loadingState:MutableLiveData<Boolean> = MutableLiveData(false)
     var news:MutableLiveData<List<Article>> = MutableLiveData(null)
     val searchNews: MutableLiveData<List<Article>> = MutableLiveData()
@@ -117,6 +117,11 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
     }
 
 
+    fun returnSavedArticles():LiveData<List<Article>>
+      {
+       return repo.getSavedArticles().asLiveData()
+
+   }
 
 
 

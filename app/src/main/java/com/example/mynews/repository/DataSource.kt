@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface DataSource {
 
-     val savedArticles:Flow<List<Article>>
+    fun getSavedArticles():Flow<List<Article>>
     suspend fun getNewsByCountry(countryCode: String): Result<List<Article>>
 
     suspend fun getNewsByCatagory(countryCode: String, category: String): Result<List<Article>>

@@ -16,6 +16,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.PagerSnapHelper
 import com.example.mynews.R
 import com.example.mynews.adapters.NewsAdapter
 import com.example.mynews.databinding.FragmentNewsListBinding
@@ -75,6 +76,8 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+        val pager = PagerSnapHelper()
+        pager.attachToRecyclerView(binding.newsRecycler)
         isoCode?.let { viewModel.getNews(it) }
 
         viewModel.news.observe(viewLifecycleOwner, {

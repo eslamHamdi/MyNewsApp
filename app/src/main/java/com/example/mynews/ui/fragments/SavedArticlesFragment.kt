@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mynews.R
 import com.example.mynews.adapters.NewsAdapter
@@ -33,15 +34,18 @@ val viewModel:NewsViewModel by sharedViewModel()
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_saved_articles,container,false)
 
         adapter.articleClickListener = this
+        binding.savedRecycler.adapter = adapter
+        val pager = PagerSnapHelper()
+        pager.attachToRecyclerView(binding.savedRecycler)
 
-        viewModel.savedNews.observe(viewLifecycleOwner,{
+
+        viewModel.returnSavedArticles().observe(viewLifecycleOwner,{
             binding.savedProgress.visibility = View.VISIBLE
             adapter.submitList(it)
             binding.savedProgress.visibility= View.GONE
 
         })
 
-        binding.savedRecycler.adapter = adapter
 
         return binding.root
     }
@@ -80,6 +84,8 @@ val viewModel:NewsViewModel by sharedViewModel()
         ItemTouchHelper(itemTouchHelperCallback).apply {
             attachToRecyclerView(binding.savedRecycler)
         }
+
+
 
     }
     }
