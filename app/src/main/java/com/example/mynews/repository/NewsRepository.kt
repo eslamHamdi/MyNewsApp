@@ -10,7 +10,6 @@ import com.example.mynews.utils.entityToDomain
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -26,7 +25,7 @@ class NewsRepository(private val dao: ArticlesDao,private val NewService: Servic
 
     override val savedArticles:Flow<List<Article>> = flow { dao.getSavedArticles().map {
         it.entityToDomain()
-    }.distinctUntilChanged() }
+    } }
 
 
     override suspend fun getNewsByCountry(countryCode:String) = withContext(dispatcher){

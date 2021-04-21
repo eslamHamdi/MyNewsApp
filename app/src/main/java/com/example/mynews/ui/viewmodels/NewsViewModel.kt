@@ -14,7 +14,7 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
     val savedNews:LiveData<List<Article>> = repo.savedArticles.asLiveData(viewModelScope.coroutineContext)
     var loadingState:MutableLiveData<Boolean> = MutableLiveData(false)
     var news:MutableLiveData<List<Article>> = MutableLiveData(null)
-    var country:MutableLiveData<String> = MutableLiveData("")
+    val searchNews: MutableLiveData<List<Article>> = MutableLiveData()
     private val channel = Channel<String>(Channel.BUFFERED)
     val toastFlow = channel.receiveAsFlow()
 
@@ -23,8 +23,9 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
     {
         loadingState.value = true
 
-        viewModelScope.launch {
 
+        viewModelScope.launch {
+          news.value= mutableListOf()
               when(val response = repo.getNewsByCountry(code))
             {
                 is Result.Success -> {news.value = (response.data)}
@@ -57,7 +58,14 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
     fun addToFavorites(article:Article)
     {
         viewModelScope.launch {
-            repo.saveArticle(article)
+            try {
+                repo.saveArticle(article)
+                toastTriggered("Article Saved!!")
+            }catch (e:Exception)
+            {
+                toastTriggered("Saving Failed!!")
+            }
+
 
         }
 
@@ -77,6 +85,22 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
             repo.deleteAllArticles()
         }
     }
+
+    fun newsSearch(kewWord:String)
+    {
+        loadingState.value = true
+        viewModelScope.launch {
+            val response = repo.NewsSearch(kewWord)
+            when(response)
+            {
+                is Result.Success -> {searchNews.postValue(response.data)}
+                is Result.Error -> toastTriggered(response.message)
+            }
+            loadingState.value = false
+        }
+        }
+
+
 
     fun toastTriggered(message:String?)
     {

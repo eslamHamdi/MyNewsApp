@@ -81,6 +81,7 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
         viewModel.news.observe(viewLifecycleOwner, {
 
             newsAdapter.submitList(it)
+            newsAdapter.notifyDataSetChanged()
         })
 
 

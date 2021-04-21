@@ -62,4 +62,5 @@ class NewsAdapter:ListAdapter<Article,NewsAdapter.NewsViewHolder>(DiffCallBack)
     {
         fun clickArticle(article:Article)
     }
+
 }

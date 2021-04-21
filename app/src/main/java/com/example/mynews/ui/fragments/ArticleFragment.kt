@@ -5,23 +5,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.example.mynews.R
 import com.example.mynews.databinding.FragmentArticleBinding
+import com.example.mynews.ui.viewmodels.NewsViewModel
+import com.example.mynews.utils.observeInLifecycle
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.onEach
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class ArticleFragment : Fragment() {
 
     lateinit var binding: FragmentArticleBinding
    val args:ArticleFragmentArgs by navArgs()
+    val viewModel:NewsViewModel by sharedViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
     }
 
+    @InternalCoroutinesApi
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,6 +42,14 @@ class ArticleFragment : Fragment() {
             webViewClient = WebViewClient()
             args.article.url?.let { loadUrl(it) }
         }
+
+        binding.fab.setOnClickListener {
+            viewModel.addToFavorites(args.article)
+        }
+
+        viewModel.toastFlow.onEach {
+            Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT).show()
+        }.observeInLifecycle(this)
 
         return binding.root
     }
