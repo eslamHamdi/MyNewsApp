@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/newsListFragment"
         android:name="com.example.mynews.ui.fragments.NewsListFragment"
-        android:label="fragment_news_list"
-        tools:layout="@layout/fragment_news_list" >
+        android:label="@string/headnews"
+        tools:layout="@layout/fragment_news_list">
         <action
             android:id="@+id/action_newsListFragment_to_articleFragment"
             app:destination="@id/articleFragment" />
@@ -17,8 +17,8 @@
     <fragment
         android:id="@+id/savedArticlesFragment"
         android:name="com.example.mynews.ui.fragments.SavedArticlesFragment"
-        android:label="fragment_saved_articles"
-        tools:layout="@layout/fragment_saved_articles" >
+        android:label="@string/savedarticles"
+        tools:layout="@layout/fragment_saved_articles">
         <action
             android:id="@+id/action_savedArticlesFragment_to_articleFragment"
             app:destination="@id/articleFragment" />
@@ -26,8 +26,8 @@
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.mynews.ui.fragments.SearchFragment"
-        android:label="fragment_search"
-        tools:layout="@layout/fragment_search" >
+        android:label="@string/article_search"
+        tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_searchFragment_to_articleFragment"
             app:destination="@id/articleFragment" />
@@ -35,8 +35,8 @@
     <fragment
         android:id="@+id/articleFragment"
         android:name="com.example.mynews.ui.fragments.ArticleFragment"
-        android:label="fragment_article"
-        tools:layout="@layout/fragment_article" >
+        android:label="Article"
+        tools:layout="@layout/fragment_article">
         <argument
             android:name="article"
             app:argType="com.example.mynews.domain.Article" />

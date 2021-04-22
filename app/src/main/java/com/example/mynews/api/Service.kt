@@ -13,13 +13,11 @@ interface Service {
    ):Response<NewsResponse>
 
     @GET("top-headlines")
-    suspend fun getByCatagory(@Query("country") country:String, @Query("page")
-    pageNumber: Int = 1,@Query("category") category:String):Response<NewsResponse>
+    suspend fun getByCatagory(@Query("country") country:String
+                              ,@Query("category") category:String):Response<NewsResponse>
 
     @GET("everything")
     suspend fun searchForNews(
         @Query("q")
-        searchQuery: String,
-        @Query("page")
-        pageNumber: Int = 1):Response<NewsResponse>
+        searchQuery: String):Response<NewsResponse>
 }

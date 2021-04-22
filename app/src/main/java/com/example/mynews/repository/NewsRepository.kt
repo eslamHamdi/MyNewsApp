@@ -57,7 +57,7 @@ class NewsRepository(private val dao: ArticlesDao,private val NewService: Servic
         withContext(dispatcher) {
 
             val response =
-                NewService.getByCatagory(country = countryCode, category = category, pageNumber = 1)
+                NewService.getByCatagory(country = countryCode, category = category)
 
             result = if (response.isSuccessful) {
                 val list = response.body()?.articles.dtoToDomain()
@@ -78,7 +78,7 @@ class NewsRepository(private val dao: ArticlesDao,private val NewService: Servic
 
         withContext(dispatcher) {
 
-            val response = NewService.searchForNews(searchQuery = keyWord, pageNumber = 1)
+            val response = NewService.searchForNews(searchQuery = keyWord)
 
             result = if (response.isSuccessful) {
                 val list = response.body()?.articles.dtoToDomain()
