@@ -43,6 +43,7 @@ class NewsActivity : AppCompatActivity() {
         val actionbar = supportActionBar
         val appBarConfiguration = AppBarConfiguration.Builder(setOf(R.id.newsListFragment,R.id.savedArticlesFragment,R.id.searchFragment)).build()
         setupActionBarWithNavController(navController,appBarConfiguration)
+
     }
 
     //hiding keyboard if edit texts out of focus
@@ -70,5 +71,6 @@ class NewsActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
 
 }

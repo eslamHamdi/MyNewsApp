@@ -2,7 +2,9 @@ package com.example.mynews.ui.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.IntentSender
+import android.content.SharedPreferences
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
@@ -45,13 +47,15 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
     private lateinit var fusedLocationClient: FusedLocationProviderClient
    lateinit var newsAdapter:NewsAdapter
     lateinit var geocoder: Geocoder
-    var isoCode:String? = "us"
+    var isoCode:String? = null
     var countryName =""
+    lateinit var sharedPreferences: SharedPreferences
+    lateinit var editor:SharedPreferences.Editor
 
     var locationCallback: LocationCallback? =null
     val viewModel: NewsViewModel by sharedViewModel()
 
-    @InternalCoroutinesApi
+    @SuppressLint("CommitPrefEdits")
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -61,30 +65,45 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_news_list, container, false)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
         geocoder = Geocoder(this.requireContext())
+        sharedPreferences = this.requireContext().getSharedPreferences("code", Context.MODE_PRIVATE)
+        editor = sharedPreferences.edit()
 
-
-        viewModel.toastFlow.onEach {
-            Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT).show()
-        }.observeInLifecycle(this)
 
         return binding.root
     }
 
+
+    @InternalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?)
     {
         super.onViewCreated(view, savedInstanceState)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
+
+        viewModel.toastFlow.onEach {
+            Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT).show()
+        }.observeInLifecycle(viewLifecycleOwner)
+
+
         val pager = PagerSnapHelper()
         pager.attachToRecyclerView(binding.newsRecycler)
+
+        isoCode = sharedPreferences.getString("code","us")
+
         isoCode?.let { viewModel.getNews(it) }
 
         viewModel.news.observe(viewLifecycleOwner, {
             newsAdapter = NewsAdapter()
             binding.newsRecycler.adapter = newsAdapter
-            newsAdapter.submitList(it)
-            newsAdapter.articleClickListener = this
+           it?.let {
+               if (it.isNotEmpty())
+               {
+                   newsAdapter.submitList(it)
+                   newsAdapter.articleClickListener = this
+               }
+
+           }
         })
 
 
@@ -252,7 +271,9 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
 
                 if (!isoCode.isNullOrEmpty())
                 {
-
+                    editor.putString("code",isoCode)
+                    editor.commit()
+                    viewModel.fragmentCreatedToast = true
                     viewModel.getNews(isoCode!!)
                     stopLocationUpdates()
                 }
@@ -276,6 +297,11 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
         }
 
     }
+
+
+
+
+
 
 }
 private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34

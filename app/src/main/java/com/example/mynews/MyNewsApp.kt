@@ -15,6 +15,7 @@ import org.koin.dsl.module
 
 class MyNewsApp : Application() {
 
+
     override fun onCreate() {
         super.onCreate()
 
@@ -29,6 +30,7 @@ val myModule = module {
     single { Room.databaseBuilder(this@MyNewsApp,LocalDataBase::class.java,"NewsDataBase").build().getDao()}
 
     single { NewsClient.get(this@MyNewsApp).create(Service::class.java) }
+
 }
 
 

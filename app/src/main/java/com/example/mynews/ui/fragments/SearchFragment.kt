@@ -1,9 +1,12 @@
 package com.example.mynews.ui.fragments
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -14,10 +17,10 @@ import com.example.mynews.adapters.NewsAdapter
 import com.example.mynews.databinding.FragmentSearchBinding
 import com.example.mynews.domain.Article
 import com.example.mynews.ui.viewmodels.NewsViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.example.mynews.utils.isNetworkConnected
+import com.example.mynews.utils.observeInLifecycle
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -27,7 +30,17 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
     lateinit var binding:FragmentSearchBinding
    lateinit var adapter :NewsAdapter
 
+    @InternalCoroutinesApi
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
+        super.onCreate(savedInstanceState)
+        viewModel.toastFlow.onEach {
+            Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT).show()
+        }.observeInLifecycle(this)
+    }
 
+
+    @SuppressLint("NewApi")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,8 +58,7 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
         viewModel.searchNews.observe(viewLifecycleOwner,{
             adapter = NewsAdapter()
             binding.searchRecycler.adapter = adapter
-            adapter.articleClickListener = this
-            adapter.submitList(it)
+            validateNetowrkAndList(it,this.requireContext())
         })
         return binding.root
     }
@@ -71,6 +83,23 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
 
     override fun clickArticle(article: Article) {
         findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToArticleFragment(article))
+    }
+
+
+    @SuppressLint("NewApi")
+    fun validateNetowrkAndList(list:List<Article>,context: Context)
+    {
+        if (list.isNullOrEmpty()&&!isNetworkConnected(context))
+        {
+            binding.noNetwork.visibility = View.VISIBLE
+
+        }else
+        {
+            binding.noNetwork.visibility = View.GONE
+            adapter.submitList(list)
+            adapter.articleClickListener = this
+        }
+
     }
 }
 

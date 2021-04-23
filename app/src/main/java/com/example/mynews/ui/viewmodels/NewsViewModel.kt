@@ -1,5 +1,6 @@
 package com.example.mynews.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.mynews.domain.Article
 import com.example.mynews.dto.Result
@@ -7,6 +8,7 @@ import com.example.mynews.repository.DataSource
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+
 
 class NewsViewModel(private val repo:DataSource):ViewModel() {
 
@@ -17,6 +19,9 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
     val searchNews: MutableLiveData<List<Article>> = MutableLiveData()
     private val channel = Channel<String>(Channel.BUFFERED)
     val toastFlow = channel.receiveAsFlow()
+    var fragmentCreatedToast = true
+
+
 
 
     fun getNews(code:String)
@@ -25,12 +30,25 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
 
 
         viewModelScope.launch {
-              when(val response = repo.getNewsByCountry(code))
+            try
             {
-                is Result.Success -> {news.value = (response.data)}
-                is Result.Error -> toastTriggered(response.message)
+                when(val response = repo.getNewsByCountry(code))
+                {
+                    is Result.Success -> {news.value = (response.data)}
+                    is Result.Error -> toastTriggered("error:" + response.message)
+                }
+                //Log.e(null, "getNews: ${news.value}", )
+
+            }catch (e:Exception)
+            {
+               if (fragmentCreatedToast)
+             {
+                    toastTriggered("Connection error!!")
+                    fragmentCreatedToast = false
+                }
+
+                Log.e(null, "getNews: $e" )
             }
-            //Log.e(null, "getNews: ${news.value}", )
             loadingState.value = false
         }
 
@@ -41,13 +59,21 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
         loadingState.value = true
 
         viewModelScope.launch {
+try
+{
+    val response = repo.getNewsByCatagory(code,category)
+    when(response)
+    {
+        is Result.Success -> {news.postValue(response.data)}
+        is Result.Error -> toastTriggered("error:" + response.message)
+    }
+}catch (e:Exception)
+{
 
-            val response = repo.getNewsByCatagory(code,category)
-            when(response)
-            {
-                is Result.Success -> {news.postValue(response.data)}
-                is Result.Error -> toastTriggered(response.message)
-            }
+        toastTriggered("Connection error!!")
+    Log.e(null, "getbyCategory: $e")
+}
+
             loadingState.value = false
         }
 
@@ -89,12 +115,21 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
     {
         loadingState.value = true
         viewModelScope.launch {
-            val response = repo.NewsSearch(kewWord)
-            when(response)
+
+            try
             {
-                is Result.Success -> {searchNews.postValue(response.data)}
-                is Result.Error -> toastTriggered(response.message)
+                val response = repo.NewsSearch(kewWord)
+                when(response)
+                {
+                    is Result.Success -> {searchNews.postValue(response.data)}
+                    is Result.Error -> toastTriggered("error:" + response.message)
+                }
+            }catch (e:Exception)
+            {
+                toastTriggered("Connection error!!")
+                Log.e(null, "newsSearch: $e")
             }
+
             loadingState.value = false
         }
         }
@@ -108,9 +143,6 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
             if (message != null)
             {
                 channel.send(message)
-            }else
-            {
-                channel.send("error No Connection")
             }
 
         }
@@ -122,6 +154,8 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
        return repo.getSavedArticles().asLiveData()
 
    }
+
+
 
 
 
