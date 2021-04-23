@@ -56,6 +56,18 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
     val viewModel: NewsViewModel by sharedViewModel()
 
     @SuppressLint("CommitPrefEdits")
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
+        super.onCreate(savedInstanceState)
+        sharedPreferences = this.requireContext().getSharedPreferences("code", Context.MODE_PRIVATE)
+        editor = sharedPreferences.edit()
+
+        isoCode = sharedPreferences.getString("code","us")
+
+        isoCode?.let { viewModel.code = it}
+    }
+
+
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -65,9 +77,6 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_news_list, container, false)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
         geocoder = Geocoder(this.requireContext())
-        sharedPreferences = this.requireContext().getSharedPreferences("code", Context.MODE_PRIVATE)
-        editor = sharedPreferences.edit()
-
 
         return binding.root
     }
@@ -89,10 +98,6 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
         val pager = PagerSnapHelper()
         pager.attachToRecyclerView(binding.newsRecycler)
 
-        isoCode = sharedPreferences.getString("code","us")
-
-        isoCode?.let { viewModel.getNews(it) }
-
         viewModel.news.observe(viewLifecycleOwner, {
             newsAdapter = NewsAdapter()
             binding.newsRecycler.adapter = newsAdapter
@@ -105,9 +110,6 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
 
            }
         })
-
-
-
 
         binding.filterByLocation.setOnClickListener {
             requestPermissions()
@@ -273,7 +275,6 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
                 {
                     editor.putString("code",isoCode)
                     editor.commit()
-                    viewModel.fragmentCreatedToast = true
                     viewModel.getNews(isoCode!!)
                     stopLocationUpdates()
                 }

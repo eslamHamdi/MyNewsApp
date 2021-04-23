@@ -17,10 +17,17 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
     var loadingState:MutableLiveData<Boolean> = MutableLiveData(false)
     var news:MutableLiveData<List<Article>> = MutableLiveData(null)
     var searchNews: MutableLiveData<List<Article>> = MutableLiveData()
+    var code:String = ""
 
     private val channel = Channel<String>(Channel.BUFFERED)
     val toastFlow = channel.receiveAsFlow()
     var fragmentCreatedToast = true
+
+
+    init
+    {
+        getNews(code)
+    }
 
 
 
@@ -42,11 +49,8 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
 
             }catch (e:Exception)
             {
-               if (fragmentCreatedToast)
-             {
+
                     toastTriggered("Connection error!!")
-                    fragmentCreatedToast = false
-                }
 
                 Log.e(null, "getNews: $e" )
             }
