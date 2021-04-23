@@ -16,7 +16,8 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
 
     var loadingState:MutableLiveData<Boolean> = MutableLiveData(false)
     var news:MutableLiveData<List<Article>> = MutableLiveData(null)
-    val searchNews: MutableLiveData<List<Article>> = MutableLiveData()
+    var searchNews: MutableLiveData<List<Article>> = MutableLiveData()
+
     private val channel = Channel<String>(Channel.BUFFERED)
     val toastFlow = channel.receiveAsFlow()
     var fragmentCreatedToast = true

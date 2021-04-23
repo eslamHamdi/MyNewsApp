@@ -51,8 +51,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:src="@drawable/ic_baseline_signal_wifi_off"
-            android:contentDescription="@string/no_network" />
+            android:src="@drawable/ic_baseline_youtube_searched_for"
+            android:contentDescription="@string/no_network"
+           />
 
 
 

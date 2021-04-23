@@ -17,7 +17,6 @@ import com.example.mynews.adapters.NewsAdapter
 import com.example.mynews.databinding.FragmentSearchBinding
 import com.example.mynews.domain.Article
 import com.example.mynews.ui.viewmodels.NewsViewModel
-import com.example.mynews.utils.isNetworkConnected
 import com.example.mynews.utils.observeInLifecycle
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.onEach
@@ -37,6 +36,7 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
         viewModel.toastFlow.onEach {
             Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT).show()
         }.observeInLifecycle(this)
+
     }
 
 
@@ -47,6 +47,7 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_search, container, false)
+
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -69,6 +70,7 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
         var job: Job? = null
         binding.searchBar.addTextChangedListener {
             job?.cancel()
+            resetSearchList()
             job = MainScope().launch {
                 delay(1000)
                 it?.let {
@@ -78,6 +80,7 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
                 }
             }
         }
+
 
         }
 
@@ -89,17 +92,28 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
     @SuppressLint("NewApi")
     fun validateNetowrkAndList(list:List<Article>,context: Context)
     {
-        if (list.isNullOrEmpty()&&!isNetworkConnected(context))
+        if (list.isNullOrEmpty())
         {
-            binding.noNetwork.visibility = View.VISIBLE
+           binding.noNetwork.visibility = View.VISIBLE
+            binding.executePendingBindings()
 
         }else
         {
             binding.noNetwork.visibility = View.GONE
+
             adapter.submitList(list)
             adapter.articleClickListener = this
         }
 
     }
+
+    fun resetSearchList(){
+        if ( binding.searchBar.editableText.isEmpty() ||  binding.searchBar.editableText.isBlank())
+        {
+            viewModel.searchNews.value =listOf()
+        }
+    }
+
+
 }
 
