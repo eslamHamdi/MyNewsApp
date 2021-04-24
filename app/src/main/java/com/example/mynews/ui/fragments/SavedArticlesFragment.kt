@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -15,7 +16,10 @@ import com.example.mynews.adapters.NewsAdapter
 import com.example.mynews.databinding.FragmentSavedArticlesBinding
 import com.example.mynews.domain.Article
 import com.example.mynews.ui.viewmodels.NewsViewModel
+import com.example.mynews.utils.observeInLifecycle
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.onEach
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -23,6 +27,15 @@ class SavedArticlesFragment : Fragment() ,NewsAdapter.OnArticleClick{
 lateinit var binding:FragmentSavedArticlesBinding
 val viewModel:NewsViewModel by sharedViewModel()
     private val adapter = NewsAdapter()
+
+    @InternalCoroutinesApi
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
+        super.onCreate(savedInstanceState)
+        viewModel.toastFlow.onEach {
+            Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT).show()
+        }.observeInLifecycle(this)
+    }
 
 
     override fun onCreateView(
@@ -32,6 +45,8 @@ val viewModel:NewsViewModel by sharedViewModel()
         // Inflate the layout for this fragment
 
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_saved_articles,container,false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
 
         adapter.articleClickListener = this
         binding.savedRecycler.adapter = adapter
@@ -41,8 +56,10 @@ val viewModel:NewsViewModel by sharedViewModel()
 
         viewModel.returnSavedArticles().observe(viewLifecycleOwner,{
             binding.savedProgress.visibility = View.VISIBLE
+            viewModel.noData.value = it.isNullOrEmpty()
             adapter.submitList(it)
             binding.savedProgress.visibility= View.GONE
+
 
         })
 
@@ -88,5 +105,6 @@ val viewModel:NewsViewModel by sharedViewModel()
 
 
     }
+
     }
 

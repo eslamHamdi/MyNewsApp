@@ -52,6 +52,7 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
     lateinit var sharedPreferences: SharedPreferences
     lateinit var editor:SharedPreferences.Editor
 
+
     var locationCallback: LocationCallback? =null
     val viewModel: NewsViewModel by sharedViewModel()
 
@@ -64,7 +65,7 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
 
         isoCode = sharedPreferences.getString("code","us")
 
-        isoCode?.let { viewModel.code = it}
+        isoCode?.let { viewModel.getNews(it) }
     }
 
 
@@ -77,6 +78,11 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_news_list, container, false)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
         geocoder = Geocoder(this.requireContext())
+
+        binding.refreshLayOut.setOnRefreshListener {
+            isoCode?.let { viewModel.getNews(it) }
+            binding.refreshLayOut.isRefreshing = false
+        }
 
         return binding.root
     }
@@ -120,6 +126,7 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
 
     }
 
+
     private fun requestPermissions()
     {
         if (hasLocationPermissions(requireContext()))
@@ -150,7 +157,7 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
 
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>)
     {
-        return
+        getUserLocation()
     }
 
     override fun onRequestPermissionsResult(
@@ -268,7 +275,7 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
                         }
                     }.await()
 
-                isoCode = countryName?.let { it1 -> getCountryCode(it1) }
+                isoCode =  getCountryCode(countryName)
                 Log.d(null, "onLocationResult:$isoCode ")
 
                 if (!isoCode.isNullOrEmpty())

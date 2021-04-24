@@ -26,7 +26,7 @@ object NewsClient {
 
         val url = request.url().newBuilder().addQueryParameter(
             "apiKey",
-            "73dade22420a47f8afca5ddfbd5a7b6f"
+            "8e98250683b04c8ba88be0edc5bad11e"
         ).build()
 
         request = request.newBuilder().url(url)

@@ -4,6 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="viewModel"
+            type="com.example.mynews.ui.viewmodels.NewsViewModel" />
 
     </data>
 
@@ -19,6 +22,18 @@
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="vertical" />
+
+
+        <ImageView
+            android:id="@+id/no_data"
+            viewVisibility="@{viewModel.noData.booleanValue()}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_no_data"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toTopOf="parent"/>
 
         <ProgressBar
             android:id="@+id/saved_progress"

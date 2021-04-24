@@ -10,29 +10,21 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 
-class NewsViewModel(private val repo:DataSource):ViewModel() {
+class NewsViewModel(private val repo:DataSource):ViewModel()
+{
 
 
-
-    var loadingState:MutableLiveData<Boolean> = MutableLiveData(false)
-    var news:MutableLiveData<List<Article>> = MutableLiveData(null)
+    var loadingState: MutableLiveData<Boolean> = MutableLiveData(false)
+    var noData: MutableLiveData<Boolean> = MutableLiveData(true)
+    var news: MutableLiveData<List<Article>> = MutableLiveData(null)
     var searchNews: MutableLiveData<List<Article>> = MutableLiveData()
-    var code:String = ""
 
     private val channel = Channel<String>(Channel.BUFFERED)
     val toastFlow = channel.receiveAsFlow()
     var fragmentCreatedToast = true
 
 
-    init
-    {
-        getNews(code)
-    }
-
-
-
-
-    fun getNews(code:String)
+    fun getNews(code: String)
     {
         loadingState.value = true
 
@@ -40,44 +32,51 @@ class NewsViewModel(private val repo:DataSource):ViewModel() {
         viewModelScope.launch {
             try
             {
-                when(val response = repo.getNewsByCountry(code))
+                when (val response = repo.getNewsByCountry(code))
                 {
-                    is Result.Success -> {news.value = (response.data)}
+                    is Result.Success ->
+                    {
+                        news.value = (response.data)
+                    }
                     is Result.Error -> toastTriggered("error:" + response.message)
                 }
                 //Log.e(null, "getNews: ${news.value}", )
 
-            }catch (e:Exception)
+            } catch (e: Exception)
             {
 
-                    toastTriggered("Connection error!!")
 
-                Log.e(null, "getNews: $e" )
+                toastTriggered("Connection error!!")
+
+                Log.e(null, "getNews: $e")
             }
             loadingState.value = false
         }
 
     }
 
-    fun getbyCategory(code:String,category:String)
+    fun getbyCategory(code: String, category: String)
     {
         loadingState.value = true
 
         viewModelScope.launch {
-try
-{
-    val response = repo.getNewsByCatagory(code,category)
-    when(response)
-    {
-        is Result.Success -> {news.postValue(response.data)}
-        is Result.Error -> toastTriggered("error:" + response.message)
-    }
-}catch (e:Exception)
-{
+            try
+            {
+                val response = repo.getNewsByCatagory(code, category)
+                when (response)
+                {
+                    is Result.Success ->
+                    {
+                        news.postValue(response.data)
+                    }
+                    is Result.Error -> toastTriggered("error:" + response.message)
+                }
+            } catch (e: Exception)
+            {
 
-        toastTriggered("Connection error!!")
-    Log.e(null, "getbyCategory: $e")
-}
+                toastTriggered("Connection error!!")
+                Log.e(null, "getbyCategory: $e")
+            }
 
             loadingState.value = false
         }
@@ -85,13 +84,14 @@ try
 
     }
 
-    fun addToFavorites(article:Article)
+    fun addToFavorites(article: Article)
     {
         viewModelScope.launch {
-            try {
+            try
+            {
                 repo.saveArticle(article)
                 toastTriggered("Article Saved!!")
-            }catch (e:Exception)
+            } catch (e: Exception)
             {
                 toastTriggered("Saving Failed!!")
             }
@@ -101,7 +101,7 @@ try
 
     }
 
-    fun deleteArticle(url:String)
+    fun deleteArticle(url: String)
     {
         viewModelScope.launch {
 
@@ -116,7 +116,7 @@ try
         }
     }
 
-    fun newsSearch(kewWord:String)
+    fun newsSearch(kewWord: String)
     {
         loadingState.value = true
         viewModelScope.launch {
@@ -124,12 +124,15 @@ try
             try
             {
                 val response = repo.NewsSearch(kewWord)
-                when(response)
+                when (response)
                 {
-                    is Result.Success -> {searchNews.postValue(response.data)}
+                    is Result.Success ->
+                    {
+                        searchNews.postValue(response.data)
+                    }
                     is Result.Error -> toastTriggered("error:" + response.message)
                 }
-            }catch (e:Exception)
+            } catch (e: Exception)
             {
                 toastTriggered("Connection error!!")
                 Log.e(null, "newsSearch: $e")
@@ -137,11 +140,10 @@ try
 
             loadingState.value = false
         }
-        }
+    }
 
 
-
-    fun toastTriggered(message:String?)
+    fun toastTriggered(message: String?)
     {
         viewModelScope.launch {
 
@@ -154,14 +156,11 @@ try
     }
 
 
-    fun returnSavedArticles():LiveData<List<Article>>
-      {
-       return repo.getSavedArticles().asLiveData()
+    fun returnSavedArticles(): LiveData<List<Article>>
+    {
 
-   }
+        return repo.getSavedArticles().asLiveData()
 
-
-
-
+    }
 
 }

@@ -28,3 +28,8 @@ fun showImage(image: ImageView, imgUrl:String?) {
         }
     }
 
+
+
+
+
+

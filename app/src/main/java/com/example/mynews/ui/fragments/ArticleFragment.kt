@@ -24,10 +24,6 @@ class ArticleFragment : Fragment() {
    val args:ArticleFragmentArgs by navArgs()
     val viewModel:NewsViewModel by sharedViewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     @InternalCoroutinesApi
     override fun onCreateView(
