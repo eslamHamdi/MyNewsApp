@@ -1,7 +1,6 @@
 package com.example.mynews.ui.fragments
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -59,7 +58,7 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
         viewModel.searchNews.observe(viewLifecycleOwner,{
             adapter = NewsAdapter()
             binding.searchRecycler.adapter = adapter
-            validateNetowrkAndList(it,this.requireContext())
+            validateNetowrkAndList(it)
         })
         return binding.root
     }
@@ -90,7 +89,7 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
 
 
     @SuppressLint("NewApi")
-    fun validateNetowrkAndList(list:List<Article>,context: Context)
+    fun validateNetowrkAndList(list:List<Article>)
     {
         if (list.isNullOrEmpty())
         {
@@ -107,6 +106,7 @@ class SearchFragment : Fragment(),NewsAdapter.OnArticleClick {
 
     }
 
+    //reset ui state if the search bar become empty
     fun resetSearchList(){
         if ( binding.searchBar.editableText.isEmpty() ||  binding.searchBar.editableText.isBlank())
         {

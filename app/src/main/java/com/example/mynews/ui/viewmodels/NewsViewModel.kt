@@ -15,19 +15,20 @@ class NewsViewModel(private val repo:DataSource):ViewModel()
 
 
     var loadingState: MutableLiveData<Boolean> = MutableLiveData(false)
-    var noData: MutableLiveData<Boolean> = MutableLiveData(true)
+    var noData: MutableLiveData<Boolean> = MutableLiveData(false)
     var news: MutableLiveData<List<Article>> = MutableLiveData(null)
     var searchNews: MutableLiveData<List<Article>> = MutableLiveData()
 
-    private val _noNewsList = MutableLiveData(true)
+    private val _noNewsList = MutableLiveData(false)
 
     val noNews:LiveData<Boolean>
     get() = _noNewsList
 
 
+    //flow to handle toasts
     private val channel = Channel<String>(Channel.BUFFERED)
     val toastFlow = channel.receiveAsFlow()
-    var fragmentCreatedToast = true
+
 
 
     fun getNews(code: String)
@@ -151,7 +152,7 @@ class NewsViewModel(private val repo:DataSource):ViewModel()
     }
 
 
-    fun toastTriggered(message: String?)
+    private fun toastTriggered(message: String?)
     {
         viewModelScope.launch {
 

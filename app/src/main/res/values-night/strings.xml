@@ -7,4 +7,5 @@
     <string name="article_search" translatable="false">Search</string>
     <string name="article_image">article Image</string>
     <string name="no_network">No Network</string>
+    <string name="save_article">Save Article</string>
 </resources>

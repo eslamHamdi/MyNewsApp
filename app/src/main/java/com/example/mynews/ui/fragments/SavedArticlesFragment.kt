@@ -32,6 +32,8 @@ val viewModel:NewsViewModel by sharedViewModel()
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
+
+        //single event
         viewModel.toastFlow.onEach {
             Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT).show()
         }.observeInLifecycle(this)
@@ -71,6 +73,7 @@ val viewModel:NewsViewModel by sharedViewModel()
         findNavController().navigate(SavedArticlesFragmentDirections.actionSavedArticlesFragmentToArticleFragment(article))
     }
 
+    //here i handle swipe to delete functionality
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(

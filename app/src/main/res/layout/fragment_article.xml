@@ -15,8 +15,7 @@
         android:layout_height="match_parent"
         tools:context=".ui.fragments.ArticleFragment"
         app:layoutDescription="@xml/fragment_article_scene">
-
-        <!-- TODO: Update blank fragment layout -->
+        
         <ImageView
             android:id="@+id/article_MainImage"
             android:layout_width="0dp"
@@ -70,7 +69,8 @@
             android:layout_marginBottom="32dp"
             android:layout_marginEnd="32dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="@string/save_article" />
 
     </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>

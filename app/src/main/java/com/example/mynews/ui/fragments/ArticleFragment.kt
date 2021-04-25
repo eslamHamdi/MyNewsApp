@@ -43,6 +43,7 @@ class ArticleFragment : Fragment() {
             viewModel.addToFavorites(args.article)
         }
 
+        //single event
         viewModel.toastFlow.onEach {
             Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT).show()
         }.observeInLifecycle(this)

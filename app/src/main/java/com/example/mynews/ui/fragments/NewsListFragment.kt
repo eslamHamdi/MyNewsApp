@@ -60,6 +60,8 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
+
+        //to save user country code for later
         sharedPreferences = this.requireContext().getSharedPreferences("code", Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
 
@@ -283,6 +285,7 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
                     editor.putString("code",isoCode)
                     editor.commit()
                     viewModel.getNews(isoCode!!)
+                    //stop tracking user location once code is retrieved
                     stopLocationUpdates()
                 }
 
@@ -295,6 +298,7 @@ class NewsListFragment : Fragment(), EasyPermissions.PermissionCallbacks,NewsAda
 
 
 
+    //convert countryName i got from location to isoCode
     fun getCountryCode(Name: String) =
         Locale.getISOCountries().find { Locale("", it).displayCountry == Name }
 
