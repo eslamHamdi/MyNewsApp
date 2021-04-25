@@ -30,6 +30,16 @@
                 tools:layout_editor_absoluteX="-119dp"
                 tools:layout_editor_absoluteY="212dp" />
 
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/ic_baseline_cloud_off"
+                viewVisibility="@{viewModel.noNews.booleanValue()}"/>
+
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/filterByLocation"
                 android:layout_width="wrap_content"
