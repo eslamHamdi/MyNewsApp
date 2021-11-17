@@ -8,7 +8,7 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.example.mynews"
@@ -109,7 +109,7 @@ dependencies {
 
 
     //Room
-    def room_version = "2.2.6"
+    def room_version = "2.3.0"
 
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
@@ -141,6 +141,9 @@ dependencies {
 
     //location
     implementation "com.google.android.gms:play-services-location:18.0.0"
+
+    //lottie
+    implementation "com.airbnb.android:lottie:4.2.0"
 
     //apiKey
 //    "apiKey",

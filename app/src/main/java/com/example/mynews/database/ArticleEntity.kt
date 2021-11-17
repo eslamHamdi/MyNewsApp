@@ -8,18 +8,18 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "SavedArticles")
 data class ArticleEntity(
     @NonNull
-    @PrimaryKey val url: String = "null",
+    @PrimaryKey var url: String = "null",
 
-    @ColumnInfo val publishedAt: String? = null,
+    @ColumnInfo var publishedAt: String? = null,
 
-    @ColumnInfo val author: String? = null,
+    @ColumnInfo var author: String? = null,
 
-    @ColumnInfo val urlToImage: String? = null,
+    @ColumnInfo var urlToImage: String? = null,
 
-    @ColumnInfo val description: String? = null,
+    @ColumnInfo var description: String? = null,
 
-    @ColumnInfo val source: String? = null,
+    @ColumnInfo var source: String? = null,
 
-    @ColumnInfo val title: String? = null,
+    @ColumnInfo var title: String? = null,
 
-    @ColumnInfo val content: String? = null)
+    @ColumnInfo var content: String? = null)
