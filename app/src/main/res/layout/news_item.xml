@@ -33,6 +33,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginStart="@dimen/small_margin"
+                android:autoMirrored="true"
                 showImage="@{Article.urlToImage}"/>
 
             <TextView
@@ -67,7 +68,7 @@
                 android:textStyle="bold"
                 android:textSize="@dimen/text_size_normal"
                 android:padding="@dimen/small_margin"
-                android:textColor="@color/black"
+                android:textColor="@color/article_title"
                 android:text="@{Article.articleTitle}"/>
 
             <TextView
